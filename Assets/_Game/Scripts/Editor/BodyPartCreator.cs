@@ -25,6 +25,8 @@ namespace _Game.Scripts.Editor {
         private const string WalkRight = "WalkRight";
         private const string WalkLeft = "WalkLeft";
 
+        private const string SortingLayer = "Character";
+
         private const string SpritePropertyName = "m_Sprite";
         private const float WalkVelocityThreshold = 0.01f;
         private const int RequiredSpriteCount = 64;
@@ -104,7 +106,7 @@ namespace _Game.Scripts.Editor {
             var spriteKeyFrames = Enumerable.Range(0, frames.Length)
                 .Select(i => new ObjectReferenceKeyframe { time = i / framerate, value = sprites[frames[i]] })
                 .ToArray();
-            
+
             var settings = AnimationUtility.GetAnimationClipSettings(clip);
             settings.loopTime = true;
             AnimationUtility.SetAnimationClipSettings(clip, settings);
@@ -150,7 +152,8 @@ namespace _Game.Scripts.Editor {
             animator.runtimeAnimatorController = controller;
             var bodyPartComponent = bodyPart.AddComponent<BodyPart>();
             bodyPartComponent.SetAnimator(animator);
-            bodyPart.AddComponent<SpriteRenderer>();
+            var spriteRenderer = bodyPart.AddComponent<SpriteRenderer>();
+            spriteRenderer.sortingLayerName = SortingLayer;
 
             PrefabUtility.SaveAsPrefabAsset(bodyPart, Path.Combine(basePath, $"{name}.prefab"));
             Object.DestroyImmediate(bodyPart);
