@@ -1,5 +1,6 @@
 ﻿using _Game.Scripts.Scheduling;
 using UnityEngine;
+using CharacterController = _Game.Scripts.Character.CharacterController;
 
 namespace _Game.Scripts {
     public class GameRunner {
