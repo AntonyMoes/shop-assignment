@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace _Game.Scripts.UI {
-    public class UIManager : MonoBehaviour, IInputBlocker, IInteractPanelPresenter, IEquipmentPanelPresenter, IInventoryObjectFactory {
+    public class UIManager : MonoBehaviour, IInputBlocker, IInteractPanelPresenter, IEquipmentPanelPresenter, IShopPanelPresenter, IInventoryObjectFactory {
         [SerializeField] private Camera _uiCamera;
         [SerializeField] private Transform _dragLayer;
         [SerializeField] private CanvasScaler _canvasScaler;
@@ -19,6 +19,7 @@ namespace _Game.Scripts.UI {
         [SerializeField] private InteractPanel _interactPanel;
         [SerializeField] private InventoryPanel _inventoryPanel;
         [SerializeField] private EquipmentPanel _equipmentPanel;
+        [SerializeField] private ShopPanel _shopPanel;
 
         private int _activeBlockingElements;
         private readonly UpdatedValue<bool> _inputBlocked = new();
@@ -27,9 +28,9 @@ namespace _Game.Scripts.UI {
         public void Init(Camera gameCamera) {
             _interactPanel.Setup(_uiCamera, gameCamera);
 
-            // TODO
             var blockingElements = new UIElement[] {
-                _equipmentPanel
+                _equipmentPanel,
+                _shopPanel
             };
             foreach (var blockingElement in blockingElements) {
                 blockingElement.State.Subscribe(OnBlockingElementStateChanged);
@@ -39,6 +40,7 @@ namespace _Game.Scripts.UI {
         public void InitPlayer(EquipmentController equipmentController, Inventory inventory) {
             _equipmentPanel.Setup(equipmentController, HideEquipmentPanel, this);
             _inventoryPanel.Setup(inventory, this);
+            _shopPanel.Setup(inventory, HideShopPanel, this);
         }
 
         private void OnBlockingElementStateChanged(UIElement.EState state) {
@@ -72,6 +74,7 @@ namespace _Game.Scripts.UI {
         }
 
         public void ShowEquipmentPanel() {
+            _inventoryPanel.Load(false);
             _inventoryPanel.Show();
             _equipmentPanel.Show();
         }
@@ -79,6 +82,18 @@ namespace _Game.Scripts.UI {
         public void HideEquipmentPanel() {
             _inventoryPanel.Hide();
             _equipmentPanel.Hide();
+        }
+
+        public void ShowShopPanel(float sellPriceModifier, Inventory shopInventory) {
+            _inventoryPanel.Load(true, sellPriceModifier);
+            _inventoryPanel.Show();
+            _shopPanel.Load(sellPriceModifier, shopInventory);
+            _shopPanel.Show();
+        }
+
+        public void HideShopPanel() {
+            _inventoryPanel.Hide();
+            _shopPanel.Hide();
         }
 
         public InventoryObjectUI CreateInventoryObject(Transform parent, IInventoryObject inventoryObject, DropComponent initialSlot) {

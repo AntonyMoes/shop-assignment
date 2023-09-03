@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Armor2
   m_EditorClassIdentifier: 
   _sprite: {fileID: 21300000, guid: efe84268fdfddd84597d6776e015beb4, type: 3}
+  _price: 500
   _slot: 2
   _bodyPart: {fileID: 502316655176929724, guid: 382d7ca1699be784399596881d3bdd7b, type: 3}

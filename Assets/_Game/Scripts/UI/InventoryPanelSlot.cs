@@ -22,9 +22,10 @@ namespace _Game.Scripts.UI {
             _dropComponent.OnDropped.Subscribe(OnDropped);
         }
 
-        public void Load(IInventoryObject equipment, IInventoryObjectFactory inventoryObjectFactory) {
+        public void Load(IInventoryObject equipment, IInventoryObjectFactory inventoryObjectFactory, bool showPrice, float priceModifier) {
             if (equipment != null) {
                 _inventoryObject = inventoryObjectFactory.CreateInventoryObject(transform, equipment, _dropComponent);
+                _inventoryObject.SetShowPrice(showPrice, priceModifier);
             }
         }
 

@@ -8,9 +8,11 @@ namespace _Game.Scripts.Objects {
         private readonly Equipment.Equipment _equipment;
 
         public Sprite Sprite { get; }
+        public int Price { get; }
         public EquipmentSlot Slot => _equipment.Slot;
 
-        public EquipmentObject(Sprite sprite, EquipmentSlot slot, Func<BodyPart> bodyPartFactory) {
+        public EquipmentObject(int price, Sprite sprite, EquipmentSlot slot, Func<BodyPart> bodyPartFactory) {
+            Price = price;
             Sprite = sprite;
             _equipment = new Equipment.Equipment(slot, bodyPartFactory);
         }

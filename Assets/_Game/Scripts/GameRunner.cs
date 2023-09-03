@@ -43,7 +43,7 @@ namespace _Game.Scripts {
         }
 
         private void InitMap() {
-            _map.Init(_uiManager, _uiManager);
+            _map.Init(_uiManager, _uiManager, _uiManager, _inventoryObjectProvider);
         }
 
         private void CreateCharacter() {
@@ -56,10 +56,8 @@ namespace _Game.Scripts {
             _player.SetController(_character);
 
             _uiManager.InitPlayer(_player.EquipmentController, _player.Inventory);
-            
-            // TODO REMOVE
-            _player.Inventory.AddObject(_inventoryObjectProvider.GetObject("Hat2"));
-            _player.Inventory.AddObject(_inventoryObjectProvider.GetObject("Armor1"));
+
+            _player.Inventory.Money.Value = 1000;
         }
     }
 }

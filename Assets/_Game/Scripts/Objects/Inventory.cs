@@ -10,6 +10,8 @@ namespace _Game.Scripts.Objects {
         private readonly Action _onInventoryUpdate;
         public readonly Event OnInventoryUpdate;
 
+        public readonly UpdatedValue<int> Money = new();
+
         public Inventory(int size) {
             OnInventoryUpdate = new Event(out _onInventoryUpdate);
             _objects = new IInventoryObject[size];

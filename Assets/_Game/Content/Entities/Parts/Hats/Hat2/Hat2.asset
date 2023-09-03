@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Hat2
   m_EditorClassIdentifier: 
   _sprite: {fileID: 21300000, guid: 1c09ed18a5af81b489022e509a24d083, type: 3}
+  _price: 80
   _slot: 3
   _bodyPart: {fileID: 4195244165855210740, guid: cdf55144e47504943ab35cebb6b90261, type: 3}
