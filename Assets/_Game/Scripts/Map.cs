@@ -16,7 +16,7 @@ namespace _Game.Scripts {
                     case Mirror mirror:
                         mirror.Setup(equipmentPanelPresenter);
                         break;
-                    case Shop.Shop shop:
+                    case Shop.ShopController shop:
                         shop.Setup(shopPanelPresenter, provider);
                         break;
                 }

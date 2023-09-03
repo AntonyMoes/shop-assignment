@@ -1,30 +1,17 @@
 ﻿using System.Linq;
-using _Game.Scripts.Interaction;
 using _Game.Scripts.Objects;
-using _Game.Scripts.UI;
-using UnityEngine;
 
 namespace _Game.Scripts.Shop {
-    public class Shop : Interactable {
-        [SerializeField] private float _sellPriceModifier;
-        [SerializeField] private string[] _goods;
+    public class Shop {
+        public readonly float SellPriceModifier;
+        public readonly Inventory Inventory;
 
-        private const int ShopInventorySize = 9;
-
-        private IShopPanelPresenter _shopPanelPresenter;
-        private Inventory _shopInventory;
-
-        public void Setup(IShopPanelPresenter shopPanelPresenter, InventoryObjectProvider provider) {
-            _shopPanelPresenter = shopPanelPresenter;
-
-            _shopInventory = new Inventory(ShopInventorySize);
-            foreach (var obj in _goods.Select(provider.GetObject)) {
-                _shopInventory.AddObject(obj);
+        public Shop(float sellPriceModifier, int inventorySize, string[] goods, InventoryObjectProvider provider) {
+            SellPriceModifier = sellPriceModifier;
+            Inventory = new Inventory(inventorySize);
+            foreach (var obj in goods.Select(provider.GetObject)) {
+                Inventory.AddObject(obj);
             }
-        }
-
-        public override void Interact() {
-            _shopPanelPresenter.ShowShopPanel(_sellPriceModifier, _shopInventory);
         }
     }
 }
