@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using GeneralUtils;
 
-namespace _Game.Scripts.Player {
-    public class PlayerEquipment {
-        private readonly Dictionary<EquipmentSlot, Equipment> _defaultEquipment = new();
+namespace _Game.Scripts.Equipment {
+    public class EquipmentController {
+        private readonly Dictionary<EquipmentSlot, IEquipment> _defaultEquipment = new();
 
-        private readonly Dictionary<EquipmentSlot, Equipment> _equipment = new();
-        public IDictionary<EquipmentSlot, Equipment> Equipment => _equipment;
+        private readonly Dictionary<EquipmentSlot, IEquipment> _equipment = new();
+        public IDictionary<EquipmentSlot, IEquipment> Equipment => _equipment;
 
-        private readonly Action<Equipment, bool> _onEquipmentActive;
-        public readonly Event<Equipment, bool> OnEquipmentActive;
+        private readonly Action<IEquipment, bool> _onEquipmentActive;
+        public readonly Event<IEquipment, bool> OnEquipmentActive;
 
-        public PlayerEquipment() {
-            OnEquipmentActive = new Event<Equipment, bool>(out _onEquipmentActive);
+        public EquipmentController() {
+            OnEquipmentActive = new Event<IEquipment, bool>(out _onEquipmentActive);
         }
 
-        public void SetDefaultEquipmentCollection(Equipment[] defaultEquipment) {
+        public void SetDefaultEquipmentCollection(IEquipment[] defaultEquipment) {
             foreach (var slot in _defaultEquipment.Keys) {
                 RemoveDefaultEquipment(slot);
             }
@@ -28,7 +28,7 @@ namespace _Game.Scripts.Player {
             }
         }
 
-        public void SetEquipment(Equipment equipment) {
+        public void SetEquipment(IEquipment equipment) {
             RemoveDefaultEquipment(equipment.Slot);
             RemoveEquipment(equipment.Slot, false);
 

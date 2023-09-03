@@ -1,4 +1,4 @@
-﻿namespace _Game.Scripts.Player {
+﻿namespace _Game.Scripts.Equipment {
     public enum EquipmentSlot {
         Body,
         Hair,

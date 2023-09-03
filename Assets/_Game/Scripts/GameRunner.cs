@@ -1,4 +1,5 @@
-﻿using _Game.Scripts.Scheduling;
+﻿using _Game.Scripts.Objects;
+using _Game.Scripts.Scheduling;
 using _Game.Scripts.UI;
 using UnityEngine;
 using CharacterController = _Game.Scripts.Character.CharacterController;
@@ -12,12 +13,14 @@ namespace _Game.Scripts {
         private readonly UIManager _uiManager;
         private readonly Map _map;
         private readonly Camera _gameCamera;
+        private readonly InventoryObjectProvider _inventoryObjectProvider;
 
         private CharacterController _character;
         private Player.Player _player;
 
         public GameRunner(CharacterController characterPrefab, Transform characterParent, Transform spawnPoint,
-            IScheduler scheduler, UIManager uiManager, Map map, Camera gameCamera) {
+            IScheduler scheduler, UIManager uiManager, Map map, Camera gameCamera,
+            InventoryObjectProvider inventoryObjectProvider) {
             _characterPrefab = characterPrefab;
             _characterParent = characterParent;
             _spawnPoint = spawnPoint;
@@ -25,6 +28,7 @@ namespace _Game.Scripts {
             _uiManager = uiManager;
             _map = map;
             _gameCamera = gameCamera;
+            _inventoryObjectProvider = inventoryObjectProvider;
         }
 
         public void Start() {
@@ -39,7 +43,7 @@ namespace _Game.Scripts {
         }
 
         private void InitMap() {
-            _map.Init(_uiManager);
+            _map.Init(_uiManager, _uiManager);
         }
 
         private void CreateCharacter() {
@@ -48,8 +52,14 @@ namespace _Game.Scripts {
         }
 
         private void InitPlayer() {
-            _player = new Player.Player(_scheduler, _uiManager);
+            _player = new Player.Player(_scheduler, _uiManager.InputBlocked);
             _player.SetController(_character);
+
+            _uiManager.InitPlayer(_player.EquipmentController, _player.Inventory);
+            
+            // TODO REMOVE
+            _player.Inventory.AddObject(_inventoryObjectProvider.GetObject("Hat2"));
+            _player.Inventory.AddObject(_inventoryObjectProvider.GetObject("Armor1"));
         }
     }
 }

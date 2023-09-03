@@ -6,9 +6,15 @@ namespace _Game.Scripts {
     public class Map : MonoBehaviour {
         [SerializeField] private Interactable[] _interactables;
 
-        public void Init(IInteractPanelPresenter interactPanelPresenter) {
+        public void Init(IInteractPanelPresenter interactPanelPresenter, IEquipmentPanelPresenter equipmentPanelPresenter) {
             foreach (var interactable in _interactables) {
                 interactable.Init(interactPanelPresenter);
+
+                switch (interactable) {
+                    case Mirror mirror:
+                        mirror.Setup(equipmentPanelPresenter);
+                        break;
+                }
             }
         }
     }

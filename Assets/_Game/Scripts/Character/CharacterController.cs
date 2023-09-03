@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using _Game.Scripts.Equipment;
 using _Game.Scripts.Interaction;
 using _Game.Scripts.Player;
 using GeneralUtils;
@@ -14,7 +15,7 @@ namespace _Game.Scripts.Character {
         [SerializeField] private Transform _bodyPartParent;
         public IUpdatedValue<IInteractable> CurrentInteractable => _interactionComponent.CurrentInteractable;
 
-        private readonly Dictionary<Equipment, BodyPart> _equipment = new ();
+        private readonly Dictionary<IEquipment, BodyPart> _equipment = new ();
 
         private Vector2 _direction;
 
@@ -30,7 +31,11 @@ namespace _Game.Scripts.Character {
             _rb.velocity = _direction * _speed;
         }
 
-        public void OnEquipmentActive(Equipment equipment, bool active) {
+        public void SetInteractionBlocker(IUpdatedValue<bool> interactionBlocked) {
+            _interactionComponent.SetInteractionBlocker(interactionBlocked);
+        }
+
+        public void OnEquipmentActive(IEquipment equipment, bool active) {
             if (active) {
                 var bodyPart = equipment.CreateBodyPart();
                 var partTransform = bodyPart.transform;
@@ -38,16 +43,26 @@ namespace _Game.Scripts.Character {
                 partTransform.localScale = Vector3.one;
                 partTransform.localPosition = Vector3.zero;
                 _equipment.Add(equipment, bodyPart);
+
+                SyncAnimations();
             } else {
                 Destroy(_equipment[equipment].gameObject);
                 _equipment.Remove(equipment);
             }
         }
 
-        public Equipment[] ProvideDefaultEquipment() {
+        public IEquipment[] ProvideDefaultEquipment() {
             return _defaultParts
-                .Select(part => new Equipment(part.Slot, () => Instantiate(part)))
+                .Select(part => new Equipment.Equipment(part.Slot, () => Instantiate(part)) as IEquipment)
                 .ToArray();
+        }
+
+        private void SyncAnimations() {
+            var masterBodyPart = _equipment.Values.FirstOrDefault();
+            foreach (var part in _equipment.Values) {
+                part.ResetAnimationTime();
+                part.ResetValuesFromOther(masterBodyPart);
+            }
         }
     }
 }

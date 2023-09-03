@@ -1,9 +1,9 @@
 ﻿using System;
 using _Game.Scripts.Character;
 
-namespace _Game.Scripts.Player {
-    public class Equipment {
-        public readonly EquipmentSlot Slot;
+namespace _Game.Scripts.Equipment {
+    public class Equipment : IEquipment {
+        public EquipmentSlot Slot { get; }
         private readonly Func<BodyPart> _bodyPartFactory;
 
         public Equipment(EquipmentSlot slot, Func<BodyPart> bodyPartFactory) {

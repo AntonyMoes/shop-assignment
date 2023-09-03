@@ -1,4 +1,5 @@
-﻿using _Game.Scripts.Player;
+﻿using _Game.Scripts.Equipment;
+using _Game.Scripts.Player;
 using UnityEngine;
 
 namespace _Game.Scripts.Character {
@@ -7,15 +8,37 @@ namespace _Game.Scripts.Character {
         [SerializeField] private EquipmentSlot _slot;
         public EquipmentSlot Slot => _slot;
 
+        private Vector2 _lastDirection;
+        private float _lastVelocity;
+
         public void SetDirection(Vector2 direction) {
             var magnitude = direction.magnitude;
-            _animator.SetFloat(AnimationParameter.Velocity, magnitude);
+            SetVelocityValues(magnitude);
             if (magnitude <= 0) {
                 return;
             }
 
+            SetDirectionValues(direction);
+        }
+
+        private void SetVelocityValues(float velocity) {
+            _lastVelocity = velocity;
+            _animator.SetFloat(AnimationParameter.Velocity, velocity);
+        }
+
+        private void SetDirectionValues(Vector2 direction) {
+            _lastDirection = direction;
             _animator.SetFloat(AnimationParameter.HorizontalDirection, direction.x);
             _animator.SetFloat(AnimationParameter.VerticalDirection, direction.y);
+        }
+
+        public void ResetAnimationTime() {
+            _animator.Play(0, -1, 0);
+        }
+
+        public void ResetValuesFromOther(BodyPart other) {
+            SetVelocityValues(other._lastVelocity);
+            SetDirectionValues(other._lastDirection);
         }
 
 #if UNITY_EDITOR
