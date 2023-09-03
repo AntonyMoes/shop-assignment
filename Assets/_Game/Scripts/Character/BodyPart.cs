@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using _Game.Scripts.Player;
+using UnityEngine;
 
 namespace _Game.Scripts.Character {
     public class BodyPart : MonoBehaviour {
         [SerializeField] private Animator _animator;
+        [SerializeField] private EquipmentSlot _slot;
+        public EquipmentSlot Slot => _slot;
 
         public void SetDirection(Vector2 direction) {
             var magnitude = direction.magnitude;
