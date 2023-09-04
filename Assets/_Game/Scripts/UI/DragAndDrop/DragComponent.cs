@@ -1,6 +1,4 @@
-﻿using System;
-using GeneralUtils;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -66,7 +64,12 @@ namespace _Game.Scripts.UI.DragAndDrop {
                 _rectTransform.anchoredPosition = _initialAnchoredPosition;
             } else {
                 if (DropComponent != null) {
-                    DropComponent.Drop(dropComponent.DragComponent);
+                    var otherDrag = dropComponent != null ? dropComponent.DragComponent : null;
+                    if (otherDrag != null) {
+                        otherDrag.DropComponent = DropComponent;
+                    }
+
+                    DropComponent.Drop(otherDrag);
                 }
 
                 DropComponent = dropComponent;

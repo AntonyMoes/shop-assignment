@@ -43,7 +43,7 @@ namespace _Game.Scripts.Objects {
             }
         }
 
-        public void RemoveObject(int position) {
+        public void RemoveObject(int position)  {
             _objects[position] = null;
             _onInventoryUpdate();
         }
