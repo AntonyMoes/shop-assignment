@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _Game.Scripts.Objects;
 using _Game.Scripts.Shop;
-using GeneralUtils;
 using GeneralUtils.UI;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,12 +12,6 @@ namespace _Game.Scripts.UI {
         [SerializeField] private Button _closeButton;
         [SerializeField] private Transform _slotParent;
         [SerializeField] private InventoryPanelSlot _slotPrefab;
-        [SerializeField] private TextMeshProUGUI _totalText;
-        [SerializeField] private Button _buyButton;
-        [SerializeField] private TextMeshProUGUI _buyButtonText;
-
-        [SerializeField] private string _buyString;
-        [SerializeField] private string _sellString;
 
         private Action _onClose;
         private IInventoryObjectFactory _factory;
@@ -28,11 +20,8 @@ namespace _Game.Scripts.UI {
         private readonly List<InventoryPanelSlot> _slots = new();
         private float _sellPriceModifier;
 
-        private ShopTransaction _transaction;
-
         protected override void Init() {
             _closeButton.onClick.AddListener(OnClose);
-            _buyButton.onClick.AddListener(OnBuy);
         }
 
         public void Setup(Inventory playerInventory, Action onClose, IInventoryObjectFactory factory) {
@@ -54,56 +43,52 @@ namespace _Game.Scripts.UI {
         }
 
         private void OnInventoryUpdate(int index, IInventoryObject inventoryObject) {
-            var fromPlayer = _shopInventory.Objects.All(obj => obj != inventoryObject);
             if (inventoryObject != null) {
                 if (_shopInventory.Objects[index] is {} obj) {
+                    _playerInventory.Money.Value -= obj.Price;
                     _shopInventory.RemoveObject(index);
-                    if (fromPlayer) {
-                        _transaction.AddTransfer(obj, true);
-                    }
                 }
 
+                _playerInventory.Money.Value += Price.ApplyModifier(inventoryObject.Price, _sellPriceModifier);
                 _shopInventory.AddObject(inventoryObject, index);
-                if (fromPlayer) {
-                    _transaction.AddTransfer(inventoryObject, false);
-                }
             } else {
                 var obj = _shopInventory.Objects[index];
+                _playerInventory.Money.Value -= obj.Price;
                 _shopInventory.RemoveObject(index);
-                _transaction.AddTransfer(obj, true);
             }
         }
 
         protected override void PerformShow(Action onDone = null) {
             for (var i = 0; i < _shopInventory.Objects.Count; i++) {
                 var slot = _slots[i];
-                slot.Load(_shopInventory.Objects[i], _factory, true, 1f);
+                slot.Load(_shopInventory.Objects[i], _factory, true, 1f, CanDrop);
             }
-
-            _buyButton.interactable = false;
-            _transaction = new ShopTransaction(_playerInventory, _shopInventory, _sellPriceModifier);
-            _transaction.TotalCost.Subscribe(OnTransactionCostChange, true);
 
             base.PerformShow(onDone);
         }
 
-        private void OnTransactionCostChange(int cost) {
-            if (cost >= 0) {
-                _totalText.text = cost.ToString();
-                _buyButtonText.text = _buyString;
-            } else {
-                _totalText.text = (-cost).ToString();
-                _buyButtonText.text = _sellString;
-            }
-
-            _buyButton.interactable = cost <= _playerInventory.Money.Value && _transaction.HasTransfers;
+        private bool CanDrop(InventoryObjectUI newObject, InventoryObjectUI existingObject) {
+            return CanDrop(true, newObject, existingObject);
         }
 
-        private void OnBuy() {
-            _playerInventory.Money.Value -= _transaction.TotalCost.Value;
-            _transaction = null;
+        public bool CanDropToInventory(InventoryObjectUI newObject, InventoryObjectUI existingObject) {
+            return CanDrop(false, newObject, existingObject);
+        }
 
-            OnClose();
+        private bool CanDrop(bool shop, InventoryObjectUI newObject, InventoryObjectUI existingObject) {
+            var fromLocalInventory = (shop ? _shopInventory : _playerInventory).Objects.Any(obj => obj == newObject.InventoryObject);
+            if (fromLocalInventory) {
+                return true;
+            }
+
+            var (boughtObject, soldObject) = shop ? (existingObject, newObject) : (newObject, existingObject);
+
+            var needToPay = GetPrice(boughtObject, 1f) - GetPrice(soldObject, _sellPriceModifier);
+            return needToPay <= _playerInventory.Money.Value;
+
+            int GetPrice(InventoryObjectUI obj, float priceModifier) {
+                return obj != null ? Price.ApplyModifier(obj.InventoryObject.Price, priceModifier) : 0;
+            }
         }
 
         private void OnClose() {
@@ -117,9 +102,6 @@ namespace _Game.Scripts.UI {
                 Destroy(slot.gameObject);
             }
             _slots.Clear();
-
-            _transaction?.Rollback();
-            _transaction = null;
 
             foreach (var slot in _slots) {
                 slot.Clear();

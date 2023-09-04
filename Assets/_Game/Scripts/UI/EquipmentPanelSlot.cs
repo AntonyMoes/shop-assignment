@@ -4,7 +4,6 @@ using _Game.Scripts.Objects;
 using _Game.Scripts.UI.DragAndDrop;
 using GeneralUtils;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Game.Scripts.UI {
     public class EquipmentPanelSlot : MonoBehaviour {
@@ -40,7 +39,7 @@ namespace _Game.Scripts.UI {
             }
         }
 
-        private bool CanDrop(DragComponent component) {
+        private bool CanDrop(DragComponent component, DragComponent _) {
             return component.TryGetComponent<InventoryObjectUI>(out var inventoryObjectUI) &&
                    inventoryObjectUI.InventoryObject is EquipmentObject equipmentObject &&
                    equipmentObject.Slot == _slot;

@@ -35,13 +35,13 @@ namespace _Game.Scripts.UI {
             _money.text = value.ToString();
         }
 
-        public void Load(bool showMoney, float priceModifier = 1f) {
+        public void Load(bool showMoney, float priceModifier = 1f, Func<InventoryObjectUI, InventoryObjectUI, bool> canDrop = null) {
             _moneyGroup.SetActive(showMoney);
             _priceModifier = priceModifier;
 
             for (var i = 0; i < _inventory.Objects.Count; i++) {
                 var slot = _slots[i];
-                slot.Load(_inventory.Objects[i], _factory, showMoney, priceModifier);
+                slot.Load(_inventory.Objects[i], _factory, showMoney, priceModifier, canDrop);
             }
         }
 

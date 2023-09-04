@@ -1,5 +1,4 @@
-﻿using System;
-using _Game.Scripts.Equipment;
+﻿using _Game.Scripts.Equipment;
 using _Game.Scripts.Objects;
 using _Game.Scripts.Player;
 using _Game.Scripts.UI.DragAndDrop;
@@ -85,7 +84,7 @@ namespace _Game.Scripts.UI {
         }
 
         public void ShowShopPanel(float sellPriceModifier, Inventory shopInventory) {
-            _inventoryPanel.Load(true, sellPriceModifier);
+            _inventoryPanel.Load(true, sellPriceModifier, _shopPanel.CanDropToInventory);
             _inventoryPanel.Show();
             _shopPanel.Load(sellPriceModifier, shopInventory);
             _shopPanel.Show();
