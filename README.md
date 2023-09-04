@@ -1,2 +1,4 @@
 # template-project
-template unity project
+
+Read [Description](Description.pdf).
+The build (compiled for Windows) is in Build.zip.
