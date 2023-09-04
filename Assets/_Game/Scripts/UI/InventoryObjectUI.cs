@@ -14,13 +14,13 @@ namespace _Game.Scripts.UI {
 
         public IInventoryObject InventoryObject { get; private set; }
 
-        public void Init(CanvasScaler canvasScaler, Transform dragLayer, IInventoryObject inventoryObject,
+        public void Init(Canvas canvas, Transform dragLayer, IInventoryObject inventoryObject,
             DropComponent initialSlot) {
             InventoryObject = inventoryObject;
             _image.sprite = InventoryObject.Sprite;
             _priceGroup.SetActive(false);
 
-            _dragComponent.Init(canvasScaler, dragLayer, initialSlot);
+            _dragComponent.Init(canvas, dragLayer, initialSlot);
         }
 
         public void SetShowPrice(bool show, float priceModifier) {

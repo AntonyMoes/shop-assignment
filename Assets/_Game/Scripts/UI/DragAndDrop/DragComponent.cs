@@ -8,7 +8,7 @@ namespace _Game.Scripts.UI.DragAndDrop {
         [SerializeField] private RectTransform _rectTransform;
         [SerializeField] private CanvasGroup _canvasGroup;
 
-        private CanvasScaler _canvasScaler;
+        private Canvas _canvas;
         private Transform _dragLayer;
 
         public DropComponent DropComponent { get; private set; }
@@ -20,8 +20,8 @@ namespace _Game.Scripts.UI.DragAndDrop {
 
         private const float AlphaScaling = 0.8f;
 
-        public void Init(CanvasScaler canvasScaler, Transform dragLayer, DropComponent dropComponent = null) {
-            _canvasScaler = canvasScaler;
+        public void Init(Canvas canvas, Transform dragLayer, DropComponent dropComponent = null) {
+            _canvas = canvas;
             _dragLayer = dragLayer;
             DropComponent = dropComponent;
             if (dropComponent != null) {
@@ -30,7 +30,7 @@ namespace _Game.Scripts.UI.DragAndDrop {
         }
 
         public void OnDrag(PointerEventData eventData) {
-            _rectTransform.anchoredPosition += eventData.delta / _canvasScaler.scaleFactor;
+            _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
         }
 
         public void OnBeginDrag(PointerEventData eventData) {

@@ -1723,7 +1723,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _uiCamera: {fileID: 1669313846}
   _dragLayer: {fileID: 1808758505}
-  _canvasScaler: {fileID: 215032964}
+  _canvas: {fileID: 215032965}
   _inventoryObjectPrefab: {fileID: 8364717689175976793, guid: ca1c309d8806b7048ad0aa172f17b81a, type: 3}
   _interactPanel: {fileID: 1794256385}
   _inventoryPanel: {fileID: 589015291}

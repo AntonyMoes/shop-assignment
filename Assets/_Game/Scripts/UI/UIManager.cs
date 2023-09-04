@@ -5,13 +5,12 @@ using _Game.Scripts.UI.DragAndDrop;
 using GeneralUtils;
 using GeneralUtils.UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Game.Scripts.UI {
     public class UIManager : MonoBehaviour, IInputBlocker, IInteractPanelPresenter, IEquipmentPanelPresenter, IShopPanelPresenter, IInventoryObjectFactory {
         [SerializeField] private Camera _uiCamera;
         [SerializeField] private Transform _dragLayer;
-        [SerializeField] private CanvasScaler _canvasScaler;
+        [SerializeField] private Canvas _canvas;
 
         [SerializeField] private InventoryObjectUI _inventoryObjectPrefab;
 
@@ -97,7 +96,7 @@ namespace _Game.Scripts.UI {
 
         public InventoryObjectUI CreateInventoryObject(Transform parent, IInventoryObject inventoryObject, DropComponent initialSlot) {
             var inventoryObjectUI = Instantiate(_inventoryObjectPrefab, parent);
-            inventoryObjectUI.Init(_canvasScaler, _dragLayer, inventoryObject, initialSlot);
+            inventoryObjectUI.Init(_canvas, _dragLayer, inventoryObject, initialSlot);
             return inventoryObjectUI;
         }
     }
